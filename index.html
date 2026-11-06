@@ -235,6 +235,7 @@ html.authlock #authGate{display:flex;position:fixed;inset:0;z-index:9999;backgro
       <label class="chk"><input type="checkbox" id="rep"><i></i><span>現地調査報告書をつける</span></label>
       <div id="covf"><input id="cname" placeholder="工事名（例：〇〇〇〇〇改修工事）"><label class="fld"><em>提出日</em><input type="date" id="cdate"></label></div>
       <div id="repf"><button type="button" class="tool" id="repEdit">報告書の内容を入力</button><label class="fld"><em>報告日</em><input type="date" id="rdate"></label></div>
+      <button type="button" class="tool" id="cacheClean" title="不要な写真データを整理して端末の容量を空けます">🧹 キャッシュ整理</button>
     </div>
   </div>
   <div id="act">空の枠をタップで写真を追加。写真入りの枠はタップで選択（図形・文字を追加できます／何も選ばなくても追加可）。「差替」で写真を差し替え、「＋挿入」で前に写真を挿入、「空白挿入」で前に空白枠を挿入。空白枠の「空白削除」で詰める。写真・記入文はドラッグ（スマホ／iPadは長押し）で入れ替え／コピー、右上の×で削除。</div>
@@ -553,22 +554,30 @@ function localProof(t,polite){
  if(polite)s=s.replace(/である。/g,'です。').replace(/だ。/g,'です。').replace(/ない。/g,'ありません。').replace(/した。/g,'しました。').replace(/いる。/g,'います。').replace(/ある。/g,'あります。');
  return s.split('\n').map(l=>l.trim()&&l.length>=8&&!/[。！？：:）)]$/.test(l)?l+'。':l).join('\n');
 }
-async function aiProof(text){
- const P='あなたは建築・設備の現地調査報告書の校正者です。次の文章を校正し、事実・数値・固有名詞・改行構造は変えずに2通りの案を作ってください。\n案a：誤字脱字・文法・表記ゆれのみを最小限に修正。\n案b：報告書にふさわしい簡潔で読みやすい敬体（です・ます調）に整える。\nJSONのみで {"a":"...","b":"..."} の形式で返してください。\n\n【文章】\n'+text;
+const AI_CTX={ov:'「概要・目的」欄。調査の背景と目的を簡潔に述べる文章。',res:'「調査結果」欄。見たこと・測ったことを客観的な事実として記す文章。事実と推測は区別し、推測表現（「思われる」「可能性がある」等）は強めも弱めもしない。',ana:'「分析・考察・対応提案など」欄。原因の考察と、対応の提案を述べる文章。提案の内容・優先度・断定の強さは変えない。'};
+const AI_TERMS='建築用語の例（正しい表記を保つ）：躯体、浮き、打診調査、ひび割れ（クラック）、爆裂、白華（エフロレッセンス）、防水層、立上り、笠木、目地、シーリング、下地、不陸、勾配、含水率、漏水、劣化、鉄部、塗膜、タイル、モルタル、ドレン、スラブ、梁、柱、開口部、サッシ';
+const numsOf=t=>(String(t).replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/(\d),(?=\d{3})/g,'$1').match(/\d+(?:\.\d+)?/g)||[]).sort().join('|');
+function numWarn(o,t){return numsOf(o)===numsOf(t)?'':'<div style="font-size:12px;color:#d00;margin-bottom:6px">⚠ 数値（寸法・日付など）が元の文章と異なる可能性があります。採用前に確認してください。</div>'}
+async function aiProof(text,key){
+ const P='あなたは建築・設備分野の現地調査報告書を校正する、経験豊富な校正者です。\n'+(AI_CTX[key]||'')+'\n\n【厳守ルール】\n・お客様に提出する文書であることを前提にする。\n・書かれていない事実、原因、数値、固有名詞を追加しない。\n・数値、単位（㎜・㎡等）、日付、人名、会社名、部位名は一字も変えない。\n・段落・改行・番号付き箇条書きの構造は維持する。\n・意味が曖昧な箇所は推測で補わず、そのまま残す。\n・'+AI_TERMS+'\n\n【2つの案】\na：誤字脱字、変換ミス、助詞の誤り、表記ゆれ、句読点のみを最小限に直す。言い回しと文体は元のまま。\nb：aに加え、お客様に提出する報告書として自然な言い回しに整える。\n　- 文体は「です・ます調」を基本とし、かしこまりすぎない（「ございます」「〜させていただきます」「〜いたしております」の多用は避け、必要な箇所だけ丁寧語にする）。\n　- 口語・話し言葉（「ちょっと」「かなり」「〜みたいな」等）や、社内用語・略語は、お客様に伝わる一般的な表現に直す。\n　- 不具合や劣化は、事実は隠さず、責める・不安をあおる表現を避けた客観的で穏やかな言い方にする（例：「ひどい」→「進行が見られます」）。\n　- 一文を短く、主語と述語を明確にし、冗長・重複を整理する。\n　- 文量は元の80〜110%に収める。\n\n出力はJSONのみ（前置き・説明・コードブロック不要）：{"a":"案a全文","b":"案b全文"}\n\n【校正する文章】\n'+text;
  const parse=s=>{const j=JSON.parse(String(s).replace(/```json|```/g,'').trim().replace(/^[^{]*/,'').replace(/[^}]*$/,''));if(!j.a||!j.b)throw 0;return j};
+ const T=ms=>new Promise((_,rj)=>setTimeout(rj,ms));
  try{
-  if(window.claude&&typeof claude.complete==='function')return parse(await claude.complete(P));
+  if(window.claude&&typeof claude.complete==='function')return parse(await Promise.race([claude.complete(P),T(45000)]));
   if(AI_ENDPOINT){const h={'Content-Type':'application/json'};try{h.Authorization='Bearer '+await firebase.auth().currentUser.getIdToken()}catch(x){}
-   const r=await fetch(AI_ENDPOINT,{method:'POST',headers:h,body:JSON.stringify({prompt:P,text})});if(!r.ok)throw 0;const j=await r.json();return j.a&&j.b?j:parse(j.text||j.content)}
+   const r=await Promise.race([fetch(AI_ENDPOINT,{method:'POST',headers:h,body:JSON.stringify({prompt:P,text,field:key,temperature:0.2})}),T(45000)]);if(!r.ok)throw 0;const j=await r.json();return j.a&&j.b?j:parse(j.text||j.content)}
  }catch(x){}
  return{a:localProof(text),b:localProof(text,1),note:'AIに接続できないため、簡易校正（機械的な置換）の結果です。'};
 }
 /* ---------- 入力画面 ---------- */
+const GEM_REQ='\n\nこの文章を対顧客への報告書としてビジネス用に校正ください';
+function copySync(t){let ok=false;try{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:0;top:0;opacity:0;font-size:16px';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand('copy');a.remove()}catch(x){}
+ if(!ok&&navigator.clipboard)try{navigator.clipboard.writeText(t);ok=true}catch(x){}return ok}
 const qa=s=>esc(s).replace(/"/g,'&quot;');
 function openRep(f){
  const mt=REP_MT.map(x=>`<label><input type="checkbox" data-mt="${x}"${rep.mt.includes(x)?' checked':''}>${x}</label>`).join('');
  const vh=()=>rep.vend.map((v,i)=>`<div class="row"><input data-vc="${i}" placeholder="業者名（例：●●設備工業）" value="${qa(v.c)}"><input data-vn="${i}" placeholder="氏名" value="${qa(v.n)}" style="max-width:38%"></div>`).join('');
- const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><button data-ai="${k}">✨ AI校正</button><div id="ai_${k}"></div>`;
+ const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><div class="row"><button data-cp="${k}">📋 コピー</button><button data-gm="${k}">✨ コピーしてGeminiを開く</button><button data-pt="${k}">📥 貼り付け</button></div><button data-ai="${k}">AI校正（API接続時）</button><div id="ai_${k}"></div>`;
  modal(`<div style="font-weight:700;font-size:16px">現地調査報告書</div>
 <label>報告日（表紙の提出日と連動）<input type="date" id="r_date"></label>
 <label>案件名（台帳の現場名と連動）<input id="r_name" placeholder="現場名"></label>
@@ -604,10 +613,17 @@ ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分�
   else if(b.id==='r_paste'){try{let t=(await navigator.clipboard.readText()).trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');if(!t)throw 0;rep.addr=t;S.querySelector('#r_addr').value=t;repRedraw();if(S.querySelector('#r_mapbox').style.display==='block')showMap();toast('住所を貼り付けました')}catch(x){toast('貼り付けできません。住所欄を長押しして貼り付けてください')}}
   else if(b.id==='vadd'){if(rep.vend.length<4){rep.vend.push({c:'',n:''});S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
   else if(b.id==='vdel'){if(rep.vend.length>1){rep.vend.pop();S.querySelector('#vbox').innerHTML=vh();repRedraw()}else{rep.vend[0]={c:'',n:''};S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
+  else if(b.dataset.cp||b.dataset.gm){const k=b.dataset.cp||b.dataset.gm;if(!rep[k].trim())return toast('コピーする文章を入力してください');
+   const ok=copySync(rep[k].replace(/\s+$/,'')+GEM_REQ);toast(ok?(b.dataset.gm?'コピーしました。Geminiに貼り付けてください':'校正依頼文つきでコピーしました'):'コピーできませんでした');
+   if(b.dataset.gm)window.open('https://gemini.google.com/app','_blank','noopener')}
+  else if(b.dataset.pt){const k=b.dataset.pt,box=S.querySelector('#ai_'+k);
+   try{let t=(await navigator.clipboard.readText()).replace(/\r/g,'').trim();if(!t)throw 0;const old=rep[k];rep[k]=t;S.querySelector('#tx_'+k).value=t;repRedraw();
+    box.innerHTML='<button data-undo="'+k+'" style="padding:8px">↩ 貼り付け前に戻す</button>';box._old=old;toast('貼り付けました')}catch(x){toast('貼り付けできません。入力欄を長押しして貼り付けてください')}}
+  else if(b.dataset.undo){const k=b.dataset.undo,box=S.querySelector('#ai_'+k);rep[k]=box._old||'';S.querySelector('#tx_'+k).value=rep[k];box.innerHTML='';repRedraw();toast('元に戻しました')}
   else if(b.dataset.ai){const k=b.dataset.ai,box=S.querySelector('#ai_'+k);if(!rep[k].trim())return toast('校正する文章を入力してください');
    b.disabled=true;box.innerHTML='<div style="font-size:13px;color:var(--mut)">校正中…</div>';
-   const r=await aiProof(rep[k]);b.disabled=false;box._r=[r.a,r.b];
-   box.innerHTML=[['案1：誤字脱字・表記のみ最小限に修正',r.a],['案2：報告書らしく簡潔・丁寧に整える',r.b]].map(([h,t],i)=>`<div style="border:1px solid var(--bd);border-radius:8px;padding:8px;margin-top:6px"><div style="font-size:12px;color:var(--mut)">${h}</div><div style="white-space:pre-wrap;margin:6px 0;font-size:14px">${esc(t)}</div><button class="p" data-use="${k}" data-i="${i}" style="padding:8px">この案を採用</button></div>`).join('')+(r.note?`<div style="font-size:12px;color:var(--mut);margin-top:4px">${r.note}</div>`:'')}
+   const r=await aiProof(rep[k],k);b.disabled=false;box._r=[r.a,r.b];
+   box.innerHTML=[['案1：誤字脱字・表記のみ最小限に修正',r.a],['案2：お客様向けに自然で読みやすく整える',r.b]].map(([h,t],i)=>`<div style="border:1px solid var(--bd);border-radius:8px;padding:8px;margin-top:6px"><div style="font-size:12px;color:var(--mut)">${h}</div><div style="white-space:pre-wrap;margin:6px 0;font-size:14px">${esc(t)}</div>${numWarn(rep[k],t)}<button class="p" data-use="${k}" data-i="${i}" style="padding:8px">この案を採用</button></div>`).join('')+(r.note?`<div style="font-size:12px;color:var(--mut);margin-top:4px">${r.note}</div>`:'')}
   else if(b.dataset.use){const k=b.dataset.use,box=S.querySelector('#ai_'+k);rep[k]=box._r[+b.dataset.i];S.querySelector('#tx_'+k).value=rep[k];box.innerHTML='';repRedraw();toast('校正文を反映しました')}
  };
  if(f==='r_addr')showMap();
@@ -1263,6 +1279,40 @@ async function openProjects(){
  };
 }
 $('#proj').onclick=openProjects;
+/* ---------- キャッシュ整理 ---------- */
+const fmtB=n=>n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(0,Math.round(n/1024))+' KB';
+async function storeUse(){try{return (await navigator.storage.estimate()).usage||0}catch(x){return null}}
+async function openCache(){
+ await flushSave();const u=await storeUse();let n=0;
+ if(db){try{n=await rq(db.transaction('projects').objectStore('projects').count())}catch(x){}}
+ modal(`<div style="font-weight:700;font-size:16px">🧹 キャッシュ整理</div>
+ <div style="font-size:14px;line-height:1.7">端末の使用容量：<b>${u==null?'不明':fmtB(u)}</b>　保存済みの現場：<b>${n}件</b></div>
+ <div style="font-size:12px;color:var(--mut);line-height:1.7">・どの現場にも属さない不要な写真データを削除します<br>・使い終わった写真のメモリ領域を解放します<br>・ブラウザの一時キャッシュを消去します<br><b style="color:var(--fg)">保存済みの現場・写真・入力内容は消えません。</b></div>
+ <div id="cres" style="font-size:14px;line-height:1.7"></div>
+ <div class="row"><button id="cGo" class="p">整理する</button><button id="cX">閉じる</button></div>`);
+ $('#cX').onclick=closeModal;
+ $('#cGo').onclick=async()=>{
+  const b=$('#cGo');b.disabled=true;b.textContent='整理中…';let rm=0,bytes=0,mem=0,cc=0,err=false;
+  try{
+   const cur0=buildDoc();
+   if(db){
+    const ps=await rq(db.transaction('projects').objectStore('projects').getAll()),ok=new Set();
+    ps.forEach(d=>(d.iids||[]).forEach(i=>ok.add(d.id+'|'+i)));
+    if(curId)cur0.iids.forEach(i=>ok.add(curId+'|'+i));
+    const t=db.transaction('images','readwrite'),st=t.objectStore('images');
+    await new Promise((res,rej)=>{const c=st.openCursor();c.onerror=()=>rej(c.error);c.onsuccess=()=>{const k=c.result;if(!k)return res();if(!ok.has(String(k.key))){rm++;const v=k.value;bytes+=typeof v==='string'?v.length:(v&&v.size)||0;k.delete()}k.continue()}});
+    await txDone(t);
+   }
+   const keep=new Set(cur0.iids);
+   for(const[id,src]of[...imgById]){if(!keep.has(id)){imgById.delete(id);imgIdOf.delete(src);mem++}}
+   if(window.caches){for(const k of await caches.keys()){await caches.delete(k);cc++}}
+  }catch(x){err=true}
+  const u2=await storeUse();
+  $('#cres').innerHTML=err?'<span style="color:#d00">整理中にエラーが発生しました。保存済みのデータは変更されていません。</span>':`✅ 整理が完了しました<br>不要な写真データ：${rm}件（約${fmtB(bytes)}）を削除<br>メモリ解放：${mem}件　一時キャッシュ：${cc}件消去<br>現在の使用容量：<b>${u2==null?'不明':fmtB(u2)}</b>`;
+  b.textContent='整理する';b.disabled=false;
+ };
+}
+$('#cacheClean').onclick=openCache;
 render();initStorage();
 /* ---------- 上部タブ ---------- */
 (function(){
