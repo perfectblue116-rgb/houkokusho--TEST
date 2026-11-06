@@ -570,7 +570,7 @@ async function aiProof(text,key){
  return{a:localProof(text),b:localProof(text,1),note:'AIに接続できないため、簡易校正（機械的な置換）の結果です。'};
 }
 /* ---------- 入力画面 ---------- */
-const GEM_REQ='\n\nこの文章を対顧客への報告書としてビジネス用に校正ください';
+const GEM_REQ='\n\nこの文章を顧客へ報告する現地報告書の報告内容として、かしこまりすぎない反映で対外的かつビジネスとしての言い回しで校正ください。';
 function copySync(t){let ok=false;try{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:0;top:0;opacity:0;font-size:16px';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand('copy');a.remove()}catch(x){}
  if(!ok&&navigator.clipboard)try{navigator.clipboard.writeText(t);ok=true}catch(x){}return ok}
 const qa=s=>esc(s).replace(/"/g,'&quot;');
