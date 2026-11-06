@@ -216,6 +216,13 @@ html.authlock #authGate{display:flex;position:fixed;inset:0;z-index:9999;backgro
 #bar .hd #cacheClean:hover{background:#ffffff40}
 @media (min-width:820px) and (max-width:1480px){#bar .fld em{display:none}}
 #bar .fld input[type=date]{font-size:13px}
+@media (max-width:640px){
+ #bar .panel[data-panel="ann"]{flex-wrap:nowrap;gap:4px;overflow-x:auto;padding:4px 6px}
+ #bar .panel[data-panel="ann"] .tool{flex:0 1 auto;min-width:0;padding:5px 7px;gap:3px;font-size:11.5px;white-space:nowrap;justify-content:center}
+ #bar .panel[data-panel="ann"] .tool .ic{width:14px;height:14px}
+ #bar .panel[data-panel="ann"] .hint{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -584,22 +591,6 @@ function repEl(){
 const GEM_REQ='\n\nこの文章を顧客へ報告する現地報告書の報告内容として、かしこまりすぎない反映で対外的かつビジネスとしての言い回し(かつ、拝啓や弊社をご利用頂き誠に有難うございますなどは不要。内容からで良い)で校正ください。';
 function copySync(t){let ok=false;try{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:0;top:0;opacity:0;font-size:16px';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand('copy');a.remove()}catch(x){}
  if(!ok&&navigator.clipboard)try{navigator.clipboard.writeText(t);ok=true}catch(x){}return ok}
-/* ---------- 文章を構成（ビジネス表現への自動変換） ---------- */
-const BZ_W=[['ちょっと','やや'],['すこし','少し'],['とても','非常に'],['すごく','非常に'],['かなり','相当'],['だいぶ','相当'],['たくさん','多数'],['いっぱい','多数'],['いろいろ','様々'],['たぶん','おそらく'],['やっぱり','やはり'],['やっぱ','やはり'],['ぜんぶ','全て'],['すべて','全て'],['ほとんど','ほぼ'],['ちゃんと','適切に'],['きちんと','適切に'],['ひどい','顕著な'],['ひどく','顕著に'],['みたいな','のような'],['みたいに','のように'],['じゃない','ではない'],['じゃなく','ではなく'],['ですけど','ですが'],['ますけど','ますが'],['したほうがいい','することをお勧めします'],['した方がいい','することをお勧めします'],['したほうがよい','することをお勧めします'],['ほうがいい','ほうがよい'],['とくに','特に'],['おもに','主に'],['たとえば','例えば'],['すぐに','速やかに'],['はやめに','早めに'],['いまのところ','現時点では'],['ひとつ','一つ'],['ふたつ','二つ'],['みっつ','三つ'],['かしょ','箇所'],
-['おこなう','行う'],['おこなっ','行っ'],['おこない','行い'],['おこなわ','行わ'],['みつけた','発見した'],['みつかっ','確認され'],['みられ','見られ'],['こわれて','破損して'],['こわれた','破損した'],['こわれ','壊れ'],['はがれ','剥がれ'],['ひびわれ','ひび割れ'],['さびて','錆びて'],['さびが','錆が'],['ぬれて','濡れて'],['しめって','湿って'],['かわいて','乾いて'],['おもわれ','思われ'],['かんがえられ','考えられ'],['かんがえ','考え'],['おもいます','思います'],['わかりました','判明しました'],['わかった','判明した'],['わかり','分かり'],['しらべ','調べ'],['つかっ','使っ'],['してます','しています'],['してる','している'],['おねがい','お願い'],['おしらせ','お知らせ'],['ごらん','ご覧'],
-['かべ','壁'],['まど','窓'],['はしら','柱'],['ほかに','他に'],['ほかの','他の'],['ばしょ','場所'],['ぶぶん','部分'],['げんじょう','現状'],['げんば','現場'],['じょうたい','状態'],['ようす','様子'],['ばあい','場合'],['かのうせい','可能性'],['ひつよう','必要'],['たいおう','対応'],['かくにん','確認'],['ほしゅう','補修'],['ほうこく','報告'],['ちょうさ','調査'],['けっか','結果'],['げんいん','原因'],['もんだい','問題'],['ふぐあい','不具合'],['れっか','劣化'],['ろうすい','漏水'],['ぼうすい','防水'],['がいへき','外壁'],['やね','屋根'],['おくじょう','屋上'],['てんじょう','天井'],['はいかん','配管'],['せつび','設備'],['こうじ','工事'],['しゅうり','修理'],['こうかん','交換'],['てんけん','点検'],['かんさつ','観察'],['そくてい','測定'],['しんこう','進行'],['はっせい','発生'],['ふくらみ','膨らみ'],['ふくれ','膨れ'],['たいしょ','対処'],['かいしゅう','改修'],['ていあん','提案'],['けんとう','検討'],['ばくれつ','爆裂'],['はくか','白華'],['じゅうたく','住宅'],['こうぞう','構造'],['ざいりょう','材料'],['ひがい','被害'],['あんぜん','安全'],['きけん','危険'],['ちゅうい','注意'],['ふきん','付近'],['しゅうへん','周辺'],['ぜんたい','全体'],['いちぶ','一部'],['ぜんめん','全面'],['ぜんぱん','全般'],['げんかい','限界'],['ていど','程度'],['しょうじ','生じ'],['みられる','見られる']
-].sort((a,b)=>b[0].length-a[0].length);
-const BZ_S=[['だから','そのため'],['なので','そのため'],['だけど','しかし'],['でも','ただし'],['あと','また'],['それから','その後'],['なお','なお']];
-const BZ_E=[[/なかった。/g,'ありませんでした。'],[/できない。/g,'できません。'],[/ではない。/g,'ではありません。'],[/らない。/g,'りません。'],[/れない。/g,'れません。'],[/しない。/g,'しません。'],[/いない。/g,'いません。'],[/ない。/g,'ありません。'],[/であった。/g,'でした。'],[/だった。/g,'でした。'],[/である。/g,'です。'],[/だ。/g,'です。'],[/あった。/g,'ありました。'],[/なった。/g,'なりました。'],[/られた。/g,'られました。'],[/された。/g,'されました。'],[/できた。/g,'できました。'],[/いた。/g,'いました。'],[/(^|[^まで])した。/g,(m,q)=>q+'しました。'],[/いる。/g,'います。'],[/ある。/g,'あります。'],[/なる。/g,'なります。'],[/される。/g,'されます。'],[/できる。/g,'できます。']];
-function bizConv(src){
- let s=String(src),n=0;const rp=(re,f)=>{s=s.replace(re,(...a)=>{n++;return typeof f==='function'?f(...a):f})};
- s=s.replace(/[０-９Ａ-Ｚａ-ｚ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/，|,(?!\d)/g,'、').replace(/．/g,'。').replace(/[!！]+/g,'。').replace(/[ \t　]{2,}/g,' ').replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n').replace(/([。、])\1+/g,'$1');
- s=s.split('\n').map(l=>l.trim()&&l.length>=8&&!/[。？：:）)]$/.test(l)?l+'。':l).join('\n');
- BZ_S.forEach(([a,b])=>{if(a!==b)rp(new RegExp('(^|[。？\\n])'+a+'(?=[、]|[^ぁ-ん])','g'),(m,p)=>p+b)});
- BZ_W.forEach(([a,b])=>rp(new RegExp(a,'g'),b));
- BZ_E.forEach(([re,b])=>rp(re,b));
- return{t:s,n};
-}
 /* ---------- 住所：Googleマップ拡大表示 ---------- */
 const cleanAddr=t=>String(t).replace(/\r?\n/g,' ').trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');
 function openMapEmbed(){
@@ -636,8 +627,10 @@ function loadGmaps(){
 }
 window.gm_authFailure=()=>{const o=$('#mapov');if(o)o.remove();toast('Googleマップのキーが無効、または許可されていません。簡易表示に切り替えます');setTimeout(openMapEmbed,300)};
 function openMap(){
- if(!GMAPS_KEY)return openMapEmbed();
- loadGmaps().then(openMapApi).catch(()=>{toast('Googleマップに接続できません。簡易表示に切り替えます');openMapEmbed()});
+ const q=(rep.addr||'').trim();
+ const u=q?'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q):'https://www.google.com/maps';
+ const w=window.open(u,'_blank','noopener');
+ if(!w)location.href=u;
 }
 function openMapApi(){
  const old=$('#mapov');if(old)old.remove();
@@ -668,12 +661,12 @@ const qa=s=>esc(s).replace(/"/g,'&quot;');
 function openRep(f){
  const mt=REP_MT.map(x=>`<label><input type="checkbox" data-mt="${x}"${rep.mt.includes(x)?' checked':''}>${x}</label>`).join('');
  const vh=()=>rep.vend.map((v,i)=>`<div class="row"><input data-vc="${i}" placeholder="業者名（例：●●設備工業）" value="${qa(v.c)}"><input data-vn="${i}" placeholder="氏名" value="${qa(v.n)}" style="max-width:38%"></div>`).join('');
- const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><button class="p" data-bz="${k}">✍ 文章を構成（ビジネス表現に自動変換）</button><div class="row"><button data-cp="${k}">📋 コピー</button><button data-gm="${k}">✨ コピーしてGeminiを開く</button><button data-pt="${k}">📥 貼り付け</button></div><div id="ai_${k}"></div>`;
+ const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><div class="row"><button data-cp="${k}">📋 コピー</button><button data-gm="${k}">✨ コピーしてGeminiを開く</button><button data-pt="${k}">📥 貼り付け</button></div><div id="ai_${k}"></div>`;
  modal(`<div style="font-weight:700;font-size:16px">現地調査報告書</div>
 <label>報告日（表紙の提出日と連動）<input type="date" id="r_date"></label>
 <label>案件名（台帳の現場名と連動）<input id="r_name" placeholder="現場名"></label>
-<label>住所<input id="r_addr" placeholder="直接入力、または「地図を拡大して指定」"></label>
-<div class="row"><button id="r_map">🗺 地図を拡大して指定</button><button id="r_paste">📋 貼り付け</button></div>
+<label>住所<input id="r_addr" placeholder="直接入力、またはGoogleマップからコピーして貼り付け"></label>
+<div class="row"><button id="r_map">🗺 Googleマップを開く</button><button id="r_paste">📋 貼り付け</button></div>
 <label>調査日<input type="date" id="r_sdate"></label>
 <div style="font-size:13px;color:var(--mut)">現地確認者（エステート住宅産業㈱ ＋ 社員3名まで）</div>
 <div class="row"><input id="st0" data-st="0" placeholder="社員1"><input data-st="1" placeholder="社員2"><input data-st="2" placeholder="社員3"></div>
@@ -684,7 +677,7 @@ function openRep(f){
 ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分析・考察・対応提案など',160)}
 <button id="r_ok" class="p">完了</button>`);
  const S=$('#sheet');
- if(GMAPS_KEY){const p=S.querySelector('#r_paste');if(p)p.remove()}
+ 
  S.querySelector('#r_date').value=cover.date||'';S.querySelector('#r_name').value=dispName();S.querySelector('#r_addr').value=rep.addr;S.querySelector('#r_sdate').value=rep.sdate;S.querySelector('#r_mx').value=rep.mx;
  rep.staff.forEach((s,i)=>S.querySelector(`[data-st="${i}"]`).value=s);
  ['ov','res','ana'].forEach(k=>S.querySelector('#tx_'+k).value=rep[k]);
@@ -701,10 +694,6 @@ ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分�
   else if(b.id==='r_paste'){try{let t=(await navigator.clipboard.readText()).trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');if(!t)throw 0;rep.addr=t;S.querySelector('#r_addr').value=t;repRedraw();toast('住所を貼り付けました')}catch(x){toast('貼り付けできません。住所欄を長押しして貼り付けてください')}}
   else if(b.id==='vadd'){if(rep.vend.length<4){rep.vend.push({c:'',n:''});S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
   else if(b.id==='vdel'){if(rep.vend.length>1){rep.vend.pop();S.querySelector('#vbox').innerHTML=vh();repRedraw()}else{rep.vend[0]={c:'',n:''};S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
-  else if(b.dataset.bz){const k=b.dataset.bz,box=S.querySelector('#ai_'+k);if(!rep[k].trim())return toast('文章を入力してください');
-   const r=bizConv(rep[k]);if(!r.n||r.t===rep[k])return toast('変換する箇所はありませんでした');
-   const old=rep[k];rep[k]=r.t;S.querySelector('#tx_'+k).value=r.t;repRedraw();box._old=old;
-   box.innerHTML='<div style="font-size:12px;color:var(--mut);margin:6px 0">'+r.n+'箇所を変換しました（ひらがな→漢字、口語→ビジネス表現、常体→敬体）</div><button data-undo="'+k+'" style="padding:8px">↩ 変換前に戻す</button>';toast('文章を構成しました')}
   else if(b.dataset.cp||b.dataset.gm){const k=b.dataset.cp||b.dataset.gm;if(!rep[k].trim())return toast('コピーする文章を入力してください');
    const ok=copySync(rep[k].replace(/\s+$/,'')+GEM_REQ);toast(ok?(b.dataset.gm?'コピーしました。Geminiに貼り付けてください':'校正依頼文つきでコピーしました'):'コピーできませんでした');
    if(b.dataset.gm)window.open('https://gemini.google.com/app','_blank','noopener')}
@@ -714,7 +703,7 @@ ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分�
   else if(b.dataset.undo){const k=b.dataset.undo,box=S.querySelector('#ai_'+k);rep[k]=box._old||'';S.querySelector('#tx_'+k).value=rep[k];box.innerHTML='';repRedraw();toast('元に戻しました')}
 
  };
- if(f==='r_addr')openMap();
+ if(f==='r_addr'){closeModal();openMap();return}
  setTimeout(()=>{const e=S.querySelector('#'+f);if(e){e.scrollIntoView({block:'center'});if(f!=='r_date'&&f!=='r_sdate')e.focus({preventScroll:true})}},60);
 }
 
