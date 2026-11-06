@@ -183,6 +183,39 @@ html.authlock #authGate{display:flex;position:fixed;inset:0;z-index:9999;backgro
 #repf{display:none;gap:8px;flex-wrap:wrap;align-items:center;width:100%;padding-top:2px}#repf.show{display:flex}
 #sheet .mt{display:grid;grid-template-columns:1fr 1fr;gap:6px}#sheet .mt label{flex-direction:row;align-items:center;gap:6px;color:var(--fg);font-size:14px}#sheet .mt input{width:auto}
 #sheet textarea{resize:vertical}
+#bar .ic{width:16px;height:16px}
+#bar .hd{padding:4px 10px;gap:8px}#bar .logo{width:26px;height:26px;border-radius:8px}#bar .brand{font-size:14px}
+#bar #proj{padding:5px 13px 5px 11px;font-size:13px}#bar #zm button{padding:3px 9px}#bar #pdf{padding:5px 13px;font-size:13px}
+#bar #logout{padding:4px 10px;font-size:12px}
+#bar #tbTog{background:#ffffff26;color:#fff;border:1px solid #ffffff40;border-radius:999px;padding:4px 11px;font-size:12px;white-space:nowrap}
+#bar .tabs{padding:4px 8px 0;gap:2px;align-items:flex-end}#bar .tab{padding:5px 11px 6px;font-size:13px;gap:5px;border-bottom-width:2px}
+#bar .hq{margin:0 2px 4px auto;width:24px;height:24px;padding:0;border-radius:50%;font-size:12px;line-height:1;flex:none}
+#bar .panel{padding:6px 10px;gap:6px}#bar .tool{padding:5px 11px;font-size:13px;border-radius:8px}
+#bar .fld{padding:2px 4px 2px 10px;border-radius:8px}#bar .fld select,#bar .fld input{padding:3px 4px;font-size:13px}
+#bar .chk{padding:5px 10px 5px 8px;border-radius:8px;font-size:13px}#bar .chk i{width:30px;height:17px}#bar .chk i:after{width:13px;height:13px}#bar .chk input:checked+i:after{left:15px}
+#bar #covf,#bar #repf{width:auto;padding:0}#bar #covf input#cname{padding:5px 10px;font-size:14px;flex:1 1 200px}
+#bar #act{display:none}#bar.help #act{display:block;padding:4px 12px}
+#bar.min .tabs,#bar.min .panels,#bar.min #act{display:none!important}
+#pages{padding-top:6px}
+/* ===== v2 さらにコンパクト：タブとツールを同じ段に配置 ===== */
+@media (min-width:820px){
+ #bar{display:grid;grid-template-columns:auto 1fr;align-items:end}
+ #bar .hd{grid-column:1/-1;padding:3px 10px}
+ #bar .tabs{grid-column:1;padding:3px 4px 0 8px;align-self:end}
+ #bar .panels{grid-column:2;border-top:0;align-self:end}
+ #bar .panel{padding:3px 8px 4px;gap:5px}
+ #bar #act{grid-column:1/-1}
+ #bar .hd .hq{margin:0}
+ #bar .tool,#bar .chk{padding-top:4px;padding-bottom:4px}
+}
+@media (max-width:819px){#bar .hd{padding:3px 8px}#bar .tabs{padding:3px 6px 0}#bar .panel{padding:4px 8px}}
+#bar #tbTog{cursor:pointer;white-space:nowrap;flex:none}
+#bar #logout{white-space:nowrap;flex:none}
+@media (max-width:640px){#bar .tl,#bar .cl{display:none}#bar #logout{padding:4px 8px;font-size:11px}#bar .hd #cacheClean,#bar .logo{display:none}#bar #zm button{padding:3px 7px}#bar #zval{min-width:40px}#bar #proj{max-width:104px;flex:0 1 auto}}
+#bar .hd #cacheClean{background:#ffffff26;color:#fff;border:1px solid #ffffff40;border-radius:999px;padding:4px 11px;font-size:12px;white-space:nowrap;font-weight:600}
+#bar .hd #cacheClean:hover{background:#ffffff40}
+@media (min-width:820px) and (max-width:1480px){#bar .fld em{display:none}}
+#bar .fld input[type=date]{font-size:13px}
 </style>
 </head>
 <body>
@@ -206,13 +239,14 @@ html.authlock #authGate{display:flex;position:fixed;inset:0;z-index:9999;backgro
     <span id="pstat"></span>
     <span class="grow"></span>
     <span id="zm" title="台帳の拡大縮小（ピンチ／Ctrl+ホイール／Ctrl+±でも可）"><button id="zout" aria-label="縮小">－</button><button id="zval" title="100%に戻す">100%</button><button id="zin" aria-label="拡大">＋</button></span>
-    <button id="pdf" class="p"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg><span>PDF出力</span></button>
+    <button id="tbTog" type="button" title="ツールバーの表示／非表示">▲<span class="tl"> 隠す</span></button><button id="pdf" class="p"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg><span>PDF出力</span></button>
     <button id="logout" title="ログアウト">ログアウト</button>
   </div>
   <div class="tabs" role="tablist">
     <button class="tab" data-tab="ins" role="tab"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg><span>写真・ページ</span></button>
     <button class="tab" data-tab="ann" role="tab"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg><span>注釈</span></button>
     <button class="tab" data-tab="set" role="tab"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>台帳の設定</span></button>
+    <button id="helpTog" type="button" class="hq" title="操作ヒントの表示／非表示">？</button>
   </div>
   <div class="panels">
     <div class="panel" data-panel="ins">
@@ -228,14 +262,14 @@ html.authlock #authGate{display:flex;position:fixed;inset:0;z-index:9999;backgro
       <span class="hint">写真の枠を選んでから押すと、その枠に追加されます</span>
     </div>
     <div class="panel" data-panel="set">
-      <label class="fld"><em>レイアウト</em><select id="lay"><option value="A">レイアウトA（3枚／右に記入欄）</option><option value="B">レイアウトB（2枚／下に記入欄）</option></select></label>
+      <label class="fld"><em>レイアウト</em><select id="lay" title="レイアウト"><option value="A">A：3枚／右に記入欄</option><option value="B">B：2枚／下に記入欄</option></select></label>
       <label class="fld"><em>表示方法</em><select id="view" title="表示方法"><option value="1">1ページ表示</option><option value="2">2ページ見開き</option></select></label>
       <label class="chk"><input type="checkbox" id="pnum" checked><i></i><span>ページ番号</span></label>
-      <label class="chk"><input type="checkbox" id="cov"><i></i><span>表紙をつける</span></label>
-      <label class="chk"><input type="checkbox" id="rep"><i></i><span>現地調査報告書をつける</span></label>
+      <label class="chk"><input type="checkbox" id="cov"><i></i><span>表紙</span></label>
+      <label class="chk"><input type="checkbox" id="rep"><i></i><span>現地調査報告書</span></label>
       <div id="covf"><input id="cname" placeholder="工事名（例：〇〇〇〇〇改修工事）"><label class="fld"><em>提出日</em><input type="date" id="cdate"></label></div>
-      <div id="repf"><button type="button" class="tool" id="repEdit">報告書の内容を入力</button><label class="fld"><em>報告日</em><input type="date" id="rdate"></label></div>
-      <button type="button" class="tool" id="cacheClean" title="不要な写真データを整理して端末の容量を空けます">🧹 キャッシュ整理</button>
+      <div id="repf"><button type="button" class="tool" id="repEdit">報告書を入力</button><label class="fld"><em>報告日</em><input type="date" id="rdate" title="報告日"></label></div>
+      <button type="button" class="tool" id="cacheClean" title="現場ごとに不要な写真データを整理して端末の容量を空けます">🧹 整理</button>
     </div>
   </div>
   <div id="act">空の枠をタップで写真を追加。写真入りの枠はタップで選択（図形・文字を追加できます／何も選ばなくても追加可）。「差替」で写真を差し替え、「＋挿入」で前に写真を挿入、「空白挿入」で前に空白枠を挿入。空白枠の「空白削除」で詰める。写真・記入文はドラッグ（スマホ／iPadは長押し）で入れ替え／コピー、右上の×で削除。</div>
@@ -360,7 +394,7 @@ function updateCover(){
 }
 function coverEl(){
  const w=document.createElement('div');w.className='wrap';
- w.innerHTML=`<div class="ph"><span>表紙（工事名・提出日をタップして変更）</span></div><div class="box"><div class="pg"><div class="cv" id="covT" style="top:236px;line-height:24px"></div><div class="cv" id="covD" style="top:638px;line-height:18px;font-size:12px"></div><img src="${LOGO}" style="position:absolute;left:172.8px;top:734.6px;width:250.6px;height:24.5px"><div class="ft">エステート住宅産業㈱</div></div></div>`;
+ w.innerHTML=`<div class="ph"><span>表紙（工事名・提出日をタップして変更）</span></div><div class="box"><div class="pg"><div class="cv" id="covT" style="top:236px;line-height:24px"></div><div class="cv" id="covD" style="top:638px;line-height:18px;font-size:12px"></div><img src="${LOGO}" style="position:absolute;left:172.8px;top:734.6px;width:250.6px;height:24.5px"></div></div>`;
  setTimeout(()=>{updateCover();const T=w.querySelector('#covT'),D=w.querySelector('#covD');if(T)T.onclick=openCover;if(D)D.onclick=openCover});return w;
 }
 function render(){
@@ -478,8 +512,6 @@ function openCover(){
 
 /* ========== 現地調査報告書 ========== */
 const REP_MT=['目視','スケール','レーザー測定器','打診棒','水分計','ファイバースコープ','レーザーレベル','オートレベル','トータルステーション','ドローン'];
-/* AI校正の接続先（任意）。POST {prompt,text} → {a:"案1",b:"案2"} を返すAPI(例：Cloud Functions)のURLを入れる。空欄なら簡易校正で動作 */
-const AI_ENDPOINT='';
 const defRep=()=>({on:false,addr:'',sdate:'',staff:['','',''],vend:[{c:'',n:''}],mt:[],mx:'',ov:'',res:'',ana:''});
 const rep=defRep();
 function repSet(d){const b=defRep();if(d&&typeof d==='object')Object.assign(b,d);b.staff=[0,1,2].map(i=>String((b.staff||[])[i]||''));b.vend=(Array.isArray(b.vend)?b.vend:[]).map(v=>({c:String(v.c||''),n:String(v.n||'')}));if(!b.vend.length)b.vend=[{c:'',n:''}];b.mt=Array.isArray(b.mt)?b.mt:[];Object.keys(b).forEach(k=>rep[k]=b[k])}
@@ -533,7 +565,7 @@ function repDraw(ctx,k,ui){
   ctx.restore();hits.push({k:key,y0,y1:y0+h});
  };
  body(rep.res,Y1,b1,'res');body(rep.ana,Y3,b2,'ana');
- drawFooter(ctx);ctx.textBaseline='alphabetic';
+ ctx.textBaseline='alphabetic';
  if(ui)repHit=hits;
 }
 function repRedraw(){const c=$('#repC');if(c)repDraw(c.getContext('2d'),2,true);scheduleSave()}
@@ -547,27 +579,6 @@ function repEl(){
    if(x>330&&y<80)f='r_date';else{const h=repHit.find(h=>y>=h.y0&&y<h.y1);if(h)f=REPKEY[h.k]}openRep(f)};
   w.querySelector('.ph button').onclick=()=>openRep('r_name');
  });return w;
-}
-/* ---------- AI校正 ---------- */
-function localProof(t,polite){
- let s=t.replace(/[０-９Ａ-Ｚａ-ｚ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/，|,(?!\d)/g,'、').replace(/．/g,'。').replace(/[ \t　]{2,}/g,' ').replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n').replace(/([。、])\1+/g,'$1');
- if(polite)s=s.replace(/である。/g,'です。').replace(/だ。/g,'です。').replace(/ない。/g,'ありません。').replace(/した。/g,'しました。').replace(/いる。/g,'います。').replace(/ある。/g,'あります。');
- return s.split('\n').map(l=>l.trim()&&l.length>=8&&!/[。！？：:）)]$/.test(l)?l+'。':l).join('\n');
-}
-const AI_CTX={ov:'「概要・目的」欄。調査の背景と目的を簡潔に述べる文章。',res:'「調査結果」欄。見たこと・測ったことを客観的な事実として記す文章。事実と推測は区別し、推測表現（「思われる」「可能性がある」等）は強めも弱めもしない。',ana:'「分析・考察・対応提案など」欄。原因の考察と、対応の提案を述べる文章。提案の内容・優先度・断定の強さは変えない。'};
-const AI_TERMS='建築用語の例（正しい表記を保つ）：躯体、浮き、打診調査、ひび割れ（クラック）、爆裂、白華（エフロレッセンス）、防水層、立上り、笠木、目地、シーリング、下地、不陸、勾配、含水率、漏水、劣化、鉄部、塗膜、タイル、モルタル、ドレン、スラブ、梁、柱、開口部、サッシ';
-const numsOf=t=>(String(t).replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/(\d),(?=\d{3})/g,'$1').match(/\d+(?:\.\d+)?/g)||[]).sort().join('|');
-function numWarn(o,t){return numsOf(o)===numsOf(t)?'':'<div style="font-size:12px;color:#d00;margin-bottom:6px">⚠ 数値（寸法・日付など）が元の文章と異なる可能性があります。採用前に確認してください。</div>'}
-async function aiProof(text,key){
- const P='あなたは建築・設備分野の現地調査報告書を校正する、経験豊富な校正者です。\n'+(AI_CTX[key]||'')+'\n\n【厳守ルール】\n・お客様に提出する文書であることを前提にする。\n・書かれていない事実、原因、数値、固有名詞を追加しない。\n・数値、単位（㎜・㎡等）、日付、人名、会社名、部位名は一字も変えない。\n・段落・改行・番号付き箇条書きの構造は維持する。\n・意味が曖昧な箇所は推測で補わず、そのまま残す。\n・'+AI_TERMS+'\n\n【2つの案】\na：誤字脱字、変換ミス、助詞の誤り、表記ゆれ、句読点のみを最小限に直す。言い回しと文体は元のまま。\nb：aに加え、お客様に提出する報告書として自然な言い回しに整える。\n　- 文体は「です・ます調」を基本とし、かしこまりすぎない（「ございます」「〜させていただきます」「〜いたしております」の多用は避け、必要な箇所だけ丁寧語にする）。\n　- 口語・話し言葉（「ちょっと」「かなり」「〜みたいな」等）や、社内用語・略語は、お客様に伝わる一般的な表現に直す。\n　- 不具合や劣化は、事実は隠さず、責める・不安をあおる表現を避けた客観的で穏やかな言い方にする（例：「ひどい」→「進行が見られます」）。\n　- 一文を短く、主語と述語を明確にし、冗長・重複を整理する。\n　- 文量は元の80〜110%に収める。\n\n出力はJSONのみ（前置き・説明・コードブロック不要）：{"a":"案a全文","b":"案b全文"}\n\n【校正する文章】\n'+text;
- const parse=s=>{const j=JSON.parse(String(s).replace(/```json|```/g,'').trim().replace(/^[^{]*/,'').replace(/[^}]*$/,''));if(!j.a||!j.b)throw 0;return j};
- const T=ms=>new Promise((_,rj)=>setTimeout(rj,ms));
- try{
-  if(window.claude&&typeof claude.complete==='function')return parse(await Promise.race([claude.complete(P),T(45000)]));
-  if(AI_ENDPOINT){const h={'Content-Type':'application/json'};try{h.Authorization='Bearer '+await firebase.auth().currentUser.getIdToken()}catch(x){}
-   const r=await Promise.race([fetch(AI_ENDPOINT,{method:'POST',headers:h,body:JSON.stringify({prompt:P,text,field:key,temperature:0.2})}),T(45000)]);if(!r.ok)throw 0;const j=await r.json();return j.a&&j.b?j:parse(j.text||j.content)}
- }catch(x){}
- return{a:localProof(text),b:localProof(text,1),note:'AIに接続できないため、簡易校正（機械的な置換）の結果です。'};
 }
 /* ---------- 入力画面 ---------- */
 const GEM_REQ='\n\nこの文章を顧客へ報告する現地報告書の報告内容として、かしこまりすぎない反映で対外的かつビジネスとしての言い回し(かつ、拝啓や弊社をご利用頂き誠に有難うございますなどは不要。内容からで良い)で校正ください。';
@@ -589,17 +600,80 @@ function bizConv(src){
  BZ_E.forEach(([re,b])=>rp(re,b));
  return{t:s,n};
 }
+/* ---------- 住所：Googleマップ拡大表示 ---------- */
+const cleanAddr=t=>String(t).replace(/\r?\n/g,' ').trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');
+function openMapEmbed(){
+ const old=$('#mapov');if(old)old.remove();
+ const ov=document.createElement('div');ov.id='mapov';
+ ov.style.cssText='position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)';
+ const st='font:inherit;color:var(--fg);background:var(--bar);border:1px solid var(--bd);border-radius:8px;padding:8px 10px';
+ ov.innerHTML=`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:8px;background:var(--bar);border-bottom:1px solid var(--bd)"><input id="mp_a" placeholder="住所・場所名で検索" style="${st};flex:1 1 200px;min-width:0;font-size:16px"><button id="mp_s" style="${st}">検索</button><button id="mp_p" style="${st}">📋 貼り付け</button><button id="mp_g" style="${st}">Googleマップで開く</button><button id="mp_ok" style="${st};background:var(--ac);color:#fff;border-color:var(--ac)">決定</button></div><iframe id="mp_f" style="flex:1;border:0;width:100%;background:#fff" referrerpolicy="no-referrer"></iframe><div style="font-size:12px;color:var(--mut);padding:6px 10px;background:var(--bar)">地図で場所を探し、表示された住所をコピーして「📋 貼り付け」を押してください。（「Googleマップで開く」では住所を長押ししてコピーできます）</div>`;
+ document.body.appendChild(ov);
+ const A=ov.querySelector('#mp_a'),F=ov.querySelector('#mp_f');A.value=rep.addr;
+ const go=()=>{F.src='https://maps.google.com/maps?q='+encodeURIComponent(A.value.trim()||'日本')+'&output=embed&hl=ja&z=17'};
+ const set=v=>{rep.addr=v;A.value=v;const e=$('#r_addr');if(e)e.value=v;repRedraw()};
+ A.oninput=()=>{rep.addr=A.value;const e=$('#r_addr');if(e)e.value=A.value;repRedraw()};
+ A.onkeydown=e=>{if(e.key==='Enter')go()};
+ ov.querySelector('#mp_s').onclick=go;
+ ov.querySelector('#mp_g').onclick=()=>window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(A.value.trim()||'日本'),'_blank','noopener');
+ ov.querySelector('#mp_p').onclick=async()=>{try{const t=cleanAddr(await navigator.clipboard.readText());if(!t)throw 0;set(t);go();toast('住所を貼り付けました')}catch(x){toast('貼り付けできません。入力欄を長押しして貼り付けてください')}};
+ ov.querySelector('#mp_ok').onclick=()=>ov.remove();
+ go();
+}
+/* ---------- Google Maps API 接続（キーを入れると有効） ----------
+   ① Google Cloud で「Maps JavaScript API」「Geocoding API」を有効化 ② APIキーを作成し、HTTPリファラ制限にこのページのURLを設定
+   ③ 下の GMAPS_KEY にキーを貼り付け。→ 地図をタップ／ピンをドラッグするだけで住所が自動入力されます。
+   （API接続時は「貼り付け」「Googleマップで開く」ボタンは表示されません。キー未設定の間は従来の簡易表示です）*/
+const GMAPS_KEY='';
+let gmP=null;
+function loadGmaps(){
+ if(window.google&&google.maps&&google.maps.Geocoder)return Promise.resolve();
+ if(gmP)return gmP;
+ gmP=new Promise((res,rej)=>{window.__gmInit=()=>res();
+  const s=document.createElement('script');s.async=true;s.onerror=()=>{gmP=null;rej(new Error('load'))};
+  s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(GMAPS_KEY)+'&language=ja&region=JP&callback=__gmInit';document.head.appendChild(s)});
+ return gmP;
+}
+window.gm_authFailure=()=>{const o=$('#mapov');if(o)o.remove();toast('Googleマップのキーが無効、または許可されていません。簡易表示に切り替えます');setTimeout(openMapEmbed,300)};
+function openMap(){
+ if(!GMAPS_KEY)return openMapEmbed();
+ loadGmaps().then(openMapApi).catch(()=>{toast('Googleマップに接続できません。簡易表示に切り替えます');openMapEmbed()});
+}
+function openMapApi(){
+ const old=$('#mapov');if(old)old.remove();
+ const ov=document.createElement('div');ov.id='mapov';
+ ov.style.cssText='position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)';
+ const st='font:inherit;color:var(--fg);background:var(--bar);border:1px solid var(--bd);border-radius:8px;padding:8px 10px';
+ ov.innerHTML=`<div style="display:flex;gap:6px;align-items:center;padding:8px;background:var(--bar);border-bottom:1px solid var(--bd)"><input id="mp_a" placeholder="住所・場所名で検索" style="${st};flex:1 1 auto;min-width:0;font-size:16px"><button id="mp_s" style="${st}">検索</button><button id="mp_l" style="${st}" title="現在地">📍</button><button id="mp_ok" style="${st};background:var(--ac);color:#fff;border-color:var(--ac)">決定</button></div><div id="mp_m" style="flex:1;width:100%;background:#e5e3df"></div><div style="font-size:12px;color:var(--mut);padding:6px 10px;background:var(--bar)">地図をタップ、またはピンをドラッグすると、その場所の住所が自動で入ります。</div>`;
+ document.body.appendChild(ov);
+ const A=ov.querySelector('#mp_a');A.value=rep.addr;
+ const clean=t=>cleanAddr(t).replace(/^〒\s*\d{3}-?\d{4}\s*/,'');
+ const set=v=>{rep.addr=v;A.value=v;const e=$('#r_addr');if(e)e.value=v;repRedraw()};
+ const geo=new google.maps.Geocoder();
+ const map=new google.maps.Map(ov.querySelector('#mp_m'),{center:{lat:36.5658,lng:139.8836},zoom:17,streetViewControl:false,fullscreenControl:false,gestureHandling:'greedy',clickableIcons:false});
+ const mk=new google.maps.Marker({draggable:true});
+ const put=ll=>{mk.setPosition(ll);mk.setMap(map)};
+ const bad=s=>toast(s==='REQUEST_DENIED'?'Geocoding API が有効になっていないか、キーが許可されていません':'住所を取得できませんでした');
+ const fill=ll=>{put(ll);geo.geocode({location:ll,language:'ja',region:'JP'},(r,s)=>{if(s!=='OK'||!r||!r.length)return bad(s);const x=r.find(v=>!(v.types||[]).includes('plus_code'))||r[0];set(clean(x.formatted_address))})};
+ const find=()=>{const q=A.value.trim();if(!q)return;geo.geocode({address:q,language:'ja',region:'JP'},(r,s)=>{if(s!=='OK'||!r||!r.length)return s==='ZERO_RESULTS'?toast('見つかりませんでした'):bad(s);const ll=r[0].geometry.location;map.setCenter(ll);map.setZoom(18);put(ll);set(clean(r[0].formatted_address))})};
+ map.addListener('click',e=>fill(e.latLng));
+ mk.addListener('dragend',e=>fill(e.latLng));
+ A.onkeydown=e=>{if(e.key==='Enter')find()};
+ ov.querySelector('#mp_s').onclick=find;
+ ov.querySelector('#mp_l').onclick=()=>{if(!navigator.geolocation)return toast('現在地を取得できません');navigator.geolocation.getCurrentPosition(p=>{const ll={lat:p.coords.latitude,lng:p.coords.longitude};map.setCenter(ll);map.setZoom(18);fill(ll)},()=>toast('現在地を取得できません（位置情報の許可を確認してください）'),{enableHighAccuracy:true,timeout:10000})};
+ ov.querySelector('#mp_ok').onclick=()=>ov.remove();
+ if(rep.addr.trim())geo.geocode({address:rep.addr.trim(),language:'ja',region:'JP'},(r,s)=>{if(s==='OK'&&r[0]){const ll=r[0].geometry.location;map.setCenter(ll);put(ll)}});
+}
 const qa=s=>esc(s).replace(/"/g,'&quot;');
 function openRep(f){
  const mt=REP_MT.map(x=>`<label><input type="checkbox" data-mt="${x}"${rep.mt.includes(x)?' checked':''}>${x}</label>`).join('');
  const vh=()=>rep.vend.map((v,i)=>`<div class="row"><input data-vc="${i}" placeholder="業者名（例：●●設備工業）" value="${qa(v.c)}"><input data-vn="${i}" placeholder="氏名" value="${qa(v.n)}" style="max-width:38%"></div>`).join('');
- const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><button class="p" data-bz="${k}">✍ 文章を構成（ビジネス表現に自動変換）</button><div class="row"><button data-cp="${k}">📋 コピー</button><button data-gm="${k}">✨ コピーしてGeminiを開く</button><button data-pt="${k}">📥 貼り付け</button></div><button data-ai="${k}">AI校正（API接続時）</button><div id="ai_${k}"></div>`;
+ const ta=(k,t,h)=>`<label>${t}<textarea id="tx_${k}" data-tx="${k}" style="height:${h}px" placeholder="改行もそのまま反映されます"></textarea></label><button class="p" data-bz="${k}">✍ 文章を構成（ビジネス表現に自動変換）</button><div class="row"><button data-cp="${k}">📋 コピー</button><button data-gm="${k}">✨ コピーしてGeminiを開く</button><button data-pt="${k}">📥 貼り付け</button></div><div id="ai_${k}"></div>`;
  modal(`<div style="font-weight:700;font-size:16px">現地調査報告書</div>
 <label>報告日（表紙の提出日と連動）<input type="date" id="r_date"></label>
 <label>案件名（台帳の現場名と連動）<input id="r_name" placeholder="現場名"></label>
-<label>住所<input id="r_addr" placeholder="直接入力、または地図からコピーして貼り付け"></label>
-<div class="row"><button id="r_map">🗺 地図で指定</button><button id="r_paste">📋 貼り付け</button></div>
-<div id="r_mapbox" style="display:none"></div>
+<label>住所<input id="r_addr" placeholder="直接入力、または「地図を拡大して指定」"></label>
+<div class="row"><button id="r_map">🗺 地図を拡大して指定</button><button id="r_paste">📋 貼り付け</button></div>
 <label>調査日<input type="date" id="r_sdate"></label>
 <div style="font-size:13px;color:var(--mut)">現地確認者（エステート住宅産業㈱ ＋ 社員3名まで）</div>
 <div class="row"><input id="st0" data-st="0" placeholder="社員1"><input data-st="1" placeholder="社員2"><input data-st="2" placeholder="社員3"></div>
@@ -610,11 +684,10 @@ function openRep(f){
 ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分析・考察・対応提案など',160)}
 <button id="r_ok" class="p">完了</button>`);
  const S=$('#sheet');
+ if(GMAPS_KEY){const p=S.querySelector('#r_paste');if(p)p.remove()}
  S.querySelector('#r_date').value=cover.date||'';S.querySelector('#r_name').value=dispName();S.querySelector('#r_addr').value=rep.addr;S.querySelector('#r_sdate').value=rep.sdate;S.querySelector('#r_mx').value=rep.mx;
  rep.staff.forEach((s,i)=>S.querySelector(`[data-st="${i}"]`).value=s);
  ['ov','res','ana'].forEach(k=>S.querySelector('#tx_'+k).value=rep[k]);
- const mapUrl=()=>'https://maps.google.com/maps?q='+encodeURIComponent(rep.addr||'日本')+'&output=embed&hl=ja';
- const showMap=()=>{const b=S.querySelector('#r_mapbox');b.style.display='block';b.innerHTML=`<iframe src="${mapUrl()}" style="width:100%;height:240px;border:1px solid var(--bd);border-radius:8px" referrerpolicy="no-referrer" loading="lazy"></iframe><div style="font-size:12px;color:var(--mut);margin:4px 0">場所を探し、表示された住所をコピーして「📋 貼り付け」を押してください。</div><div class="row"><button id="r_mapup">地図を更新</button><button id="r_gm">Googleマップアプリ／ブラウザで開く</button></div>`};
  S.oninput=e=>{const t=e.target,d=t.dataset;
   if(t.id==='r_date')setDate(t.value);else if(t.id==='r_name')setSite(t.value);
   else if(t.id==='r_addr')rep.addr=t.value;else if(t.id==='r_sdate')rep.sdate=t.value;else if(t.id==='r_mx')rep.mx=t.value;
@@ -624,9 +697,8 @@ ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分�
   repRedraw();};
  S.onclick=async e=>{const b=e.target.closest('button');if(!b)return;
   if(b.id==='r_ok'){closeModal()}
-  else if(b.id==='r_map'||b.id==='r_mapup')showMap();
-  else if(b.id==='r_gm')window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(rep.addr||'日本'),'_blank','noopener');
-  else if(b.id==='r_paste'){try{let t=(await navigator.clipboard.readText()).trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');if(!t)throw 0;rep.addr=t;S.querySelector('#r_addr').value=t;repRedraw();if(S.querySelector('#r_mapbox').style.display==='block')showMap();toast('住所を貼り付けました')}catch(x){toast('貼り付けできません。住所欄を長押しして貼り付けてください')}}
+  else if(b.id==='r_map')openMap();
+  else if(b.id==='r_paste'){try{let t=(await navigator.clipboard.readText()).trim().replace(/^日本[、,]\s*/,'').replace(/[、,]\s*日本$/,'');if(!t)throw 0;rep.addr=t;S.querySelector('#r_addr').value=t;repRedraw();toast('住所を貼り付けました')}catch(x){toast('貼り付けできません。住所欄を長押しして貼り付けてください')}}
   else if(b.id==='vadd'){if(rep.vend.length<4){rep.vend.push({c:'',n:''});S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
   else if(b.id==='vdel'){if(rep.vend.length>1){rep.vend.pop();S.querySelector('#vbox').innerHTML=vh();repRedraw()}else{rep.vend[0]={c:'',n:''};S.querySelector('#vbox').innerHTML=vh();repRedraw()}}
   else if(b.dataset.bz){const k=b.dataset.bz,box=S.querySelector('#ai_'+k);if(!rep[k].trim())return toast('文章を入力してください');
@@ -640,13 +712,9 @@ ${ta('ov','概要・目的',100)}${ta('res','調査結果',200)}${ta('ana','分�
    try{let t=(await navigator.clipboard.readText()).replace(/\r/g,'').trim();if(!t)throw 0;const old=rep[k];rep[k]=t;S.querySelector('#tx_'+k).value=t;repRedraw();
     box.innerHTML='<button data-undo="'+k+'" style="padding:8px">↩ 貼り付け前に戻す</button>';box._old=old;toast('貼り付けました')}catch(x){toast('貼り付けできません。入力欄を長押しして貼り付けてください')}}
   else if(b.dataset.undo){const k=b.dataset.undo,box=S.querySelector('#ai_'+k);rep[k]=box._old||'';S.querySelector('#tx_'+k).value=rep[k];box.innerHTML='';repRedraw();toast('元に戻しました')}
-  else if(b.dataset.ai){const k=b.dataset.ai,box=S.querySelector('#ai_'+k);if(!rep[k].trim())return toast('校正する文章を入力してください');
-   b.disabled=true;box.innerHTML='<div style="font-size:13px;color:var(--mut)">校正中…</div>';
-   const r=await aiProof(rep[k],k);b.disabled=false;box._r=[r.a,r.b];
-   box.innerHTML=[['案1：誤字脱字・表記のみ最小限に修正',r.a],['案2：お客様向けに自然で読みやすく整える',r.b]].map(([h,t],i)=>`<div style="border:1px solid var(--bd);border-radius:8px;padding:8px;margin-top:6px"><div style="font-size:12px;color:var(--mut)">${h}</div><div style="white-space:pre-wrap;margin:6px 0;font-size:14px">${esc(t)}</div>${numWarn(rep[k],t)}<button class="p" data-use="${k}" data-i="${i}" style="padding:8px">この案を採用</button></div>`).join('')+(r.note?`<div style="font-size:12px;color:var(--mut);margin-top:4px">${r.note}</div>`:'')}
-  else if(b.dataset.use){const k=b.dataset.use,box=S.querySelector('#ai_'+k);rep[k]=box._r[+b.dataset.i];S.querySelector('#tx_'+k).value=rep[k];box.innerHTML='';repRedraw();toast('校正文を反映しました')}
+
  };
- if(f==='r_addr')showMap();
+ if(f==='r_addr')openMap();
  setTimeout(()=>{const e=S.querySelector('#'+f);if(e){e.scrollIntoView({block:'center'});if(f!=='r_date'&&f!=='r_sdate')e.focus({preventScroll:true})}},60);
 }
 
@@ -1065,7 +1133,6 @@ function drawCover(ctx,k){
  ctx.font=c.fs+'px '+FONT;ctx.fillText(c.t,297.5,248);
  ctx.font='12px '+FONT;ctx.fillText(c.d,297.5,647);
  ctx.drawImage(logoImg,172.8,734.6,250.6,24.5);
- drawFooter(ctx);
 }
 function drawPage(ctx,pg,pi,k){
  ctx.setTransform(k,0,0,k,0,0);ctx.fillStyle='#fff';ctx.fillRect(0,0,595,842);
@@ -1268,21 +1335,24 @@ async function openProjects(){
  let list=[];if(db){try{list=await rq(db.transaction('projects').objectStore('projects').getAll())}catch(x){}}
  list.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
  const bs='padding:6px 10px;font-size:14px';
- const rows=list.map(d=>`<div style="display:flex;gap:6px;align-items:center;border:1px solid var(--bd);border-radius:8px;padding:6px 8px${d.id===curId?';outline:2px solid var(--ac)':''}"><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.name||(d.cover&&d.cover.name)||'無題の現場')}${d.id===curId?'（編集中）':''}</div><div style="font-size:11px;color:var(--mut)">${fmtDT(d.updatedAt||0)} 更新・写真${(d.iids||[]).length}枚</div></div>${d.id===curId?'':`<button data-o="${d.id}" style="${bs}">開く</button>`}<button data-x="${d.id}" style="${bs}">書出</button><button data-d="${d.id}" style="${bs}">削除</button></div>`).join('');
+ const rows=list.map(d=>`<div style="display:flex;gap:6px;align-items:center;border:1px solid var(--bd);border-radius:8px;padding:6px 8px${d.id===curId?';outline:2px solid var(--ac)':''}"><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.name||(d.cover&&d.cover.name)||'無題の現場')}${d.id===curId?'（編集中）':''}</div><div style="font-size:11px;color:var(--mut)">${fmtDT(d.updatedAt||0)} 更新・写真${(d.iids||[]).length}枚</div></div>${d.id===curId?'':`<button data-o="${d.id}" style="${bs}">開く</button>`}<button data-k="${d.id}" style="${bs}" title="この現場の不要な写真データだけを整理します">整理</button><button data-x="${d.id}" style="${bs}">書出</button><button data-d="${d.id}" style="${bs}">削除</button></div>`).join('');
  modal(`<div style="font-weight:700;font-size:16px">現場の管理</div>
  <div style="font-size:12px;color:var(--mut)">${db?'作業内容は自動保存されます。次に開いたときは、最後に作業した現場が自動で復元されます。':'このブラウザでは自動保存が使えません（プライベートブラウズ等）。ファイルへの書き出しをご利用ください。'}</div>
  <div id="plist" style="display:flex;flex-direction:column;gap:6px;max-height:36vh;overflow:auto">${rows||'<div style="color:var(--mut);font-size:13px">保存済みの現場はまだありません</div>'}</div>
  <div class="row"><button id="pNew">＋ 新しい現場</button><button id="pRen">名前を変更</button></div>
  <div class="row"><button id="pExp">編集中の現場をJSON保存</button><button id="pImp">JSONから読み込み</button></div>
- <button id="pClose">閉じる</button>`);
+ <button id="pCache">🧹 キャッシュ整理（現場ごとの詳細）</button>
+  <button id="pClose">閉じる</button>`);
  $('#pClose').onclick=closeModal;
+  $('#pCache').onclick=()=>openCache();
  $('#pNew').onclick=()=>askText('新しい現場の名前（工事名）','',async v=>{await flushSave();resetState();setSite(v.trim());syncInputs();await saveNow();toast('新しい現場を作成しました')});
  $('#pRen').onclick=()=>askText('現場の名前を変更',dispName(),v=>{setSite(v.trim());saveNow()});
  $('#pExp').onclick=()=>{closeModal();exportProject()};
  $('#pImp').onclick=()=>{closeModal();$('#fProj').click()};
  $('#plist').onclick=async e=>{
-  const o=e.target.closest('[data-o]'),d=e.target.closest('[data-d]'),x=e.target.closest('[data-x]');
-  if(x){await exportById(x.dataset.x)}
+  const o=e.target.closest('[data-o]'),d=e.target.closest('[data-d]'),x=e.target.closest('[data-x]'),k=e.target.closest('[data-k]');
+  if(k){k.disabled=true;k.textContent='整理中…';try{await flushSave();const r=await cacheRun(k.dataset.k);toast(r.n?`この現場の不要データ ${r.n}件（約${fmtB(r.bytes)}）を整理しました`:'整理するデータはありませんでした')}catch(er){toast('整理に失敗しました（保存済みデータは変更されていません）')}k.disabled=false;k.textContent='整理'}
+  else if(x){await exportById(x.dataset.x)}
   else if(o){
    const doc=await rq(db.transaction('projects').objectStore('projects').get(o.dataset.o));if(!doc)return;
    closeModal();await flushSave();const imgs=await getImages(doc);await applyProject(doc,imgs,false);toast('「'+(dispName()||'無題の現場')+'」を開きました');
@@ -1299,40 +1369,54 @@ async function openProjects(){
  };
 }
 $('#proj').onclick=openProjects;
-/* ---------- キャッシュ整理 ---------- */
+/* ---------- キャッシュ整理（現場ごと） ---------- */
 const fmtB=n=>n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(0,Math.round(n/1024))+' KB';
 async function storeUse(){try{return (await navigator.storage.estimate()).usage||0}catch(x){return null}}
-async function openCache(){
- await flushSave();const u=await storeUse();let n=0;
- if(db){try{n=await rq(db.transaction('projects').objectStore('projects').count())}catch(x){}}
- modal(`<div style="font-weight:700;font-size:16px">🧹 キャッシュ整理</div>
- <div style="font-size:14px;line-height:1.7">端末の使用容量：<b>${u==null?'不明':fmtB(u)}</b>　保存済みの現場：<b>${n}件</b></div>
- <div style="font-size:12px;color:var(--mut);line-height:1.7">・どの現場にも属さない不要な写真データを削除します<br>・使い終わった写真のメモリ領域を解放します<br>・ブラウザの一時キャッシュを消去します<br><b style="color:var(--fg)">保存済みの現場・写真・入力内容は消えません。</b></div>
- <div id="cres" style="font-size:14px;line-height:1.7"></div>
- <div class="row"><button id="cGo" class="p">整理する</button><button id="cX">閉じる</button></div>`);
- $('#cX').onclick=closeModal;
- $('#cGo').onclick=async()=>{
-  const b=$('#cGo');b.disabled=true;b.textContent='整理中…';let rm=0,bytes=0,mem=0,cc=0,err=false;
-  try{
-   const cur0=buildDoc();
-   if(db){
-    const ps=await rq(db.transaction('projects').objectStore('projects').getAll()),ok=new Set();
-    ps.forEach(d=>(d.iids||[]).forEach(i=>ok.add(d.id+'|'+i)));
-    if(curId)cur0.iids.forEach(i=>ok.add(curId+'|'+i));
-    const t=db.transaction('images','readwrite'),st=t.objectStore('images');
-    await new Promise((res,rej)=>{const c=st.openCursor();c.onerror=()=>rej(c.error);c.onsuccess=()=>{const k=c.result;if(!k)return res();if(!ok.has(String(k.key))){rm++;const v=k.value;bytes+=typeof v==='string'?v.length:(v&&v.size)||0;k.delete()}k.continue()}});
-    await txDone(t);
-   }
-   const keep=new Set(cur0.iids);
-   for(const[id,src]of[...imgById]){if(!keep.has(id)){imgById.delete(id);imgIdOf.delete(src);mem++}}
-   if(window.caches){for(const k of await caches.keys()){await caches.delete(k);cc++}}
-  }catch(x){err=true}
-  const u2=await storeUse();
-  $('#cres').innerHTML=err?'<span style="color:#d00">整理中にエラーが発生しました。保存済みのデータは変更されていません。</span>':`✅ 整理が完了しました<br>不要な写真データ：${rm}件（約${fmtB(bytes)}）を削除<br>メモリ解放：${mem}件　一時キャッシュ：${cc}件消去<br>現在の使用容量：<b>${u2==null?'不明':fmtB(u2)}</b>`;
-  b.textContent='整理する';b.disabled=false;
- };
+async function cacheScan(){
+ const ps=db?await rq(db.transaction('projects').objectStore('projects').getAll()):[];
+ const info=new Map(ps.map(d=>[d.id,{id:d.id,name:(d.name||'').trim()||'(名称未設定)',iids:new Set(d.iids||[]),n:0,bytes:0,on:0,ob:0}]));
+ if(curId&&info.has(curId))buildDoc().iids.forEach(i=>info.get(curId).iids.add(i));
+ const ghost={n:0,b:0};
+ if(db)await new Promise(res=>{const c=db.transaction('images').objectStore('images').openCursor();c.onerror=()=>res();c.onsuccess=()=>{const k=c.result;if(!k)return res();const key=String(k.key),i=key.indexOf('|'),pid=key.slice(0,i),iid=key.slice(i+1),v=k.value,sz=typeof v==='string'?v.length:(v&&v.size)||0,P=info.get(pid);
+  if(!P){ghost.n++;ghost.b+=sz}else{P.n++;P.bytes+=sz;if(!P.iids.has(iid)){P.on++;P.ob+=sz}}k.continue()}});
+ return{info,ghost};
 }
-$('#cacheClean').onclick=openCache;
+async function cacheRun(target){
+ const{info}=await cacheScan();let n=0,bytes=0,mem=0,cc=0;
+ if(db){const t=db.transaction('images','readwrite'),st=t.objectStore('images');
+  await new Promise((res,rej)=>{const c=st.openCursor();c.onerror=()=>rej(c.error);c.onsuccess=()=>{const k=c.result;if(!k)return res();const key=String(k.key),i=key.indexOf('|'),pid=key.slice(0,i),iid=key.slice(i+1),P=info.get(pid),orph=!P||!P.iids.has(iid);
+   if(orph&&(target==='all'||(target==='ghost'?!P:(P&&P.id===target)))){n++;const v=k.value;bytes+=typeof v==='string'?v.length:(v&&v.size)||0;k.delete()}k.continue()}});
+  await txDone(t)}
+ if(target==='all'||target===curId){const keep=new Set(buildDoc().iids);for(const[id,src]of[...imgById]){if(!keep.has(id)){imgById.delete(id);imgIdOf.delete(src);mem++}}}
+ if(target==='all'&&window.caches){for(const k of await caches.keys()){await caches.delete(k);cc++}}
+ return{n,bytes,mem,cc};
+}
+async function openCache(msg){
+ await flushSave();const u=await storeUse(),{info,ghost}=await cacheScan();
+ const row=(name,sub,id,on)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--bd)"><div style="flex:1;min-width:0"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div><div style="font-size:12px;color:var(--mut)">${sub}</div></div><button data-c="${qa(id)}" style="padding:6px 12px;font-size:13px"${on?'':' disabled'}>整理</button></div>`;
+ const rows=[...info.values()].map(P=>row(esc(P.name)+(P.id===curId?' <span style="font-size:11px;color:var(--ac)">（編集中）</span>':''),`写真 ${P.n}枚・${fmtB(P.bytes)}　不要データ ${P.on}件（${fmtB(P.ob)}）`,P.id,P.on||P.id===curId)).join('')
+  +(ghost.n?row('どの現場にも属さないデータ',`${ghost.n}件・${fmtB(ghost.b)}`,'ghost',1):'');
+ modal(`<div style="font-weight:700;font-size:16px">🧹 キャッシュ整理</div>
+ <div style="font-size:14px">端末の使用容量：<b>${u==null?'不明':fmtB(u)}</b></div>
+ <div style="font-size:12px;color:var(--mut);line-height:1.6">現場ごとに「整理」を押すと、その現場の不要な写真データ（削除した写真・差し替え前の写真など）だけを削除します。<b style="color:var(--fg)">保存済みの現場・写真・入力内容は消えません。</b></div>
+ ${msg?`<div style="font-size:14px;line-height:1.6;color:var(--ac)">${msg}</div>`:''}
+ <div>${rows||'<div style="font-size:13px;color:var(--mut)">保存済みの現場はありません</div>'}</div>
+ <div class="row"><button id="cAll" class="p">すべて整理</button><button id="cX">閉じる</button></div>`);
+ $('#sheet').onclick=async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.id==='cX')return closeModal();
+  const t=b.id==='cAll'?'all':b.dataset.c;if(!t)return;b.disabled=true;b.textContent='整理中…';let r;
+  try{r=await cacheRun(t)}catch(x){return openCache('エラーが発生しました。保存済みのデータは変更されていません。')}
+  openCache(`✅ 整理しました：不要な写真データ ${r.n}件（約${fmtB(r.bytes)}）${r.mem?`、メモリ解放 ${r.mem}件`:''}${r.cc?`、一時キャッシュ ${r.cc}件`:''}`)};
+}
+$('#cacheClean').onclick=()=>openCache();
+/* ---------- ツールバー表示切替 ---------- */
+const barEl=$('#bar');
+function setBar(min){barEl.classList.toggle('min',min);$('#tbTog').innerHTML=min?'▼<span class="tl"> メニューを開く</span>':'▲<span class="tl"> 隠す</span>';try{localStorage.setItem('pa_barmin',min?'1':'0')}catch(x){}}
+$('#tbTog').onclick=()=>setBar(!barEl.classList.contains('min'));
+$('#bar .hd').insertBefore($('#cacheClean'),$('#pstat'));$('#cacheClean').className='';$('#cacheClean').innerHTML='🧹<span class="cl"> 整理</span>';
+function placeHelp(){const h=$('#helpTog'),wide=innerWidth>=820,to=wide?$('#bar .hd'):$('#bar .tabs');if(h.parentNode!==to){if(wide)to.insertBefore(h,$('#tbTog'));else to.appendChild(h)}}
+placeHelp();addEventListener('resize',placeHelp);
+$('#helpTog').onclick=()=>barEl.classList.toggle('help');
+try{setBar(localStorage.getItem('pa_barmin')==='1')}catch(x){setBar(false)}
 render();initStorage();
 /* ---------- 上部タブ ---------- */
 (function(){
